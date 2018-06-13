@@ -98,7 +98,20 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Facades
         {
             long stageId = this.DbSet.Single(p => p.Id == id).StageId;
 
+            HashSet<long> activitiesId = new HashSet<long>(this.DbContext.DealTrackingActivities
+                   .Where(p => p.DealId.Equals(id))
+                   .Select(p => p.Id));
+
+            List<Task> tasks = new List<Task>();
+
+            foreach (long activityId in activitiesId)
+            {
+                tasks.Add(ActivityLogic.Delete(activityId));
+            }
+
+            await Task.WhenAll();
             await DealLogic.Delete(id);
+
             StageLogic.UpdateDealsOrderDelete(stageId, id);
 
             return await DbContext.SaveChangesAsync();
