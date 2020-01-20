@@ -71,7 +71,7 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Implementation
 
         public void UpdateDealsOrderCreate(long id, long dealId)
         {
-            Stage model = this.DbSet.Single(p => p.Id.Equals(id));
+            Stage model = this.DbSet.SingleOrDefault(p => p.Id.Equals(id));
 
             if (model.DealsOrder != null)
             {
@@ -89,10 +89,10 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Implementation
 
         public void UpdateDealsOrderDelete(long id, long dealId)
         {
-            Stage model = this.DbSet.Single(p => p.Id.Equals(id));
+            Stage model = this.DbSet.SingleOrDefault(p => p.Id.Equals(id));
 
             List<string> dealsOrder = model.DealsOrder.Replace("[", "").Replace("]", "").Split(",").ToList();
-            string itemToRemove = dealsOrder.Single(p => p == dealId.ToString());
+            string itemToRemove = dealsOrder.SingleOrDefault(p => p == dealId.ToString());
             dealsOrder.Remove(itemToRemove);
 
             if (dealsOrder.Count > 0)
