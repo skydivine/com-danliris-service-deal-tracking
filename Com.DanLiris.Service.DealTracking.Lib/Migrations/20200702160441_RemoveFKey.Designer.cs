@@ -4,14 +4,16 @@ using Com.DanLiris.Service.DealTracking.Lib;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Com.DanLiris.Service.DealTracking.Lib.Migrations
 {
     [DbContext(typeof(DealTrackingDbContext))]
-    partial class DealTrackingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200702160441_RemoveFKey")]
+    partial class RemoveFKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

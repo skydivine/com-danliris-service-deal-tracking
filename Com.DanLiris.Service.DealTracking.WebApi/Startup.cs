@@ -146,11 +146,11 @@ namespace Com.DanLiris.Service.DealTracking
             }
 
             /* Update Database */
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                DealTrackingDbContext context = serviceScope.ServiceProvider.GetService<DealTrackingDbContext>();
-                context.Database.Migrate();
-            }
+            //using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    DealTrackingDbContext context = serviceScope.ServiceProvider.GetService<DealTrackingDbContext>();
+            //    context.Database.Migrate();
+            //}
 
             app.UseAuthentication();
             app.UseCors(DEAL_TRACKING_POLICY);

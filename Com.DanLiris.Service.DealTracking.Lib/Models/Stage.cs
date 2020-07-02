@@ -17,6 +17,6 @@ namespace Com.DanLiris.Service.DealTracking.Lib.Models
         public virtual long BoardId { get; set; }
         [ForeignKey("BoardId")]
         public virtual Board Board { get; set; }
-        public virtual ICollection<Deal> Deals { get; set; }
+        //public virtual ICollection<Deal> Deals { get; set; }
     }
 }
