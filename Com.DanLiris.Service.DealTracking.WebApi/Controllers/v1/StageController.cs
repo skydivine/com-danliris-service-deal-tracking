@@ -46,5 +46,44 @@ namespace Com.DanLiris.Service.DealTracking.WebApi.Controllers.v1
 				return StatusCode(Common.INTERNAL_ERROR_STATUS_CODE, Result);
 			}
 		}
+
+		[HttpPost("update-dealorder-dealstage")]
+		public async Task<ActionResult> UpdateDealOrderStage()
+		{
+			try
+			{
+				var result = await Facade.UpdateDealOrderStage();
+				return Ok(new
+				{
+					result = result.Item1,
+					jumlahUid = result.Item2,
+					jumlahId = result.Item3
+				});
+			}
+			catch (Exception e)
+			{
+				Dictionary<string, object> Result =
+					new ResultFormatter(ApiVersion, Common.INTERNAL_ERROR_STATUS_CODE, e.Message)
+					.Fail();
+				return StatusCode(Common.INTERNAL_ERROR_STATUS_CODE, Result);
+			}
+		}
+
+		[HttpPost("update-stageactivity")]
+		public async Task<ActionResult> UpdateStageActivity()
+		{
+			try
+			{
+				var result = await Facade.UpdateStageActivity();
+				return Ok(result);
+			}
+			catch (Exception e)
+			{
+				Dictionary<string, object> Result =
+					new ResultFormatter(ApiVersion, Common.INTERNAL_ERROR_STATUS_CODE, e.Message)
+					.Fail();
+				return StatusCode(Common.INTERNAL_ERROR_STATUS_CODE, Result);
+			}
+		}
 	}
 }

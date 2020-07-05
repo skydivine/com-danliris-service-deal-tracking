@@ -41,8 +41,8 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Implementation
                     Code = field.Code,
                     Name = field.Name,
                     BoardId = field.BoardId,
-                    //Deals = field.Deals,
-                    DealsOrder = field.DealsOrder,
+					Deals = field.Deals,
+					DealsOrder = field.DealsOrder,
                     CreatedUtc = field.CreatedUtc,
                     LastModifiedUtc = field.LastModifiedUtc
                 });

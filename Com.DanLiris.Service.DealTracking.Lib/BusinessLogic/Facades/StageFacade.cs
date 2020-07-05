@@ -73,17 +73,23 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Facades
 			int result = 0;
 			int countstring = 0;
 			int countint = 0;
+			DbContext.Database.SetCommandTimeout(300);
 			using (var transaction = DbContext.Database.BeginTransaction())
 			{
+
 				try
 				{
 					var data = DbSet.IgnoreQueryFilters().Where(s => s.CreatedAgent == "manager");
 					foreach (var item in data)
 					{
-						List<string> dealId = item.DealsOrder.Replace("[", "").Replace("]", "").Split(",").Select(d => d.Trim()).ToList();
+						List<string> dealId = item.DealsOrder.Replace("[", "").Replace("]", "").Split(",").Select(d => d.Trim()).Where(e => !string.IsNullOrEmpty(e)).ToList();
 						countstring += dealId.Count;
 						var dealData = DbContext.DealTrackingDeals.IgnoreQueryFilters().Where(s => dealId.Contains(s.UId));
 						countint += dealData.Count();
+						if (dealId.Count != dealData.Count())
+						{
+							throw new Exception("err");
+						}
 						var newDealId = JsonConvert.SerializeObject(dealData.Select(s => s.Id));
 						item.DealsOrder = newDealId;
 
@@ -105,5 +111,92 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Facades
 			return new Tuple<int, int, int>(result, countstring, countint);
 		}
 
+		public async Task<Tuple<int, int, int>> UpdateDealOrderStage()
+		{
+			int result = 0;
+			int countstring = 0;
+			int countint = 0;
+			DbContext.Database.SetCommandTimeout(300);
+			using (var transaction = DbContext.Database.BeginTransaction())
+			{
+
+				try
+				{
+					var data = DbSet.Include(s => s.Deals);
+					foreach (var item in data)
+					{
+						List<string> dealId = item.DealsOrder != null ? item.DealsOrder.Replace("[", "").Replace("]", "").Split(",").Select(d => d.Trim()).Where(e => !string.IsNullOrEmpty(e)).ToList() : new List<string>();
+						countstring += dealId.Count;
+
+						countint += item.Deals.Count;
+
+						var newDealId = JsonConvert.SerializeObject(item.Deals.Select(s => s.Id));
+						item.DealsOrder = newDealId;
+
+						result += await DbContext.SaveChangesAsync();
+					}
+					transaction.Commit();
+				}
+				catch (Exception ex)
+				{
+					transaction.Rollback();
+					throw ex;
+				}
+
+			}
+			return new Tuple<int, int, int>(result, countstring, countint);
+		}
+
+		public async Task<int> UpdateStageActivity()
+		{
+			int result = 0;
+			DbContext.Database.SetCommandTimeout(300);
+			using (var transaction = DbContext.Database.BeginTransaction())
+			{
+				try
+				{
+					int index = 0;
+					var data = DbContext.DealTrackingActivities.Include(s => s.Deal).ThenInclude(d => d.Stage).Where(s => s.Type == "MOVE");
+					foreach (var item in data)
+					{
+						var stageFrom = DbContext.DealTrackingStages.AsNoTracking().FirstOrDefault(s => s.BoardId == item.Deal.Stage.BoardId && s.Name.ToLower() == item.StageFromName);
+						index++;
+
+						if (stageFrom != null)
+						{
+							item.StageFromId = stageFrom.Id;
+						}
+						else
+						{
+							throw new Exception("err");
+						}
+
+						var stageTo = DbContext.DealTrackingStages.AsNoTracking().FirstOrDefault(s => s.BoardId == item.Deal.Stage.BoardId && s.Name.ToLower() == item.StageToName);
+
+						if (stageTo != null)
+						{
+							item.StageToId = stageTo.Id;
+						}
+						else
+						{
+							throw new Exception("err");
+						}
+						
+						if(index % 1000 == 0)
+						{
+							result += await DbContext.SaveChangesAsync();
+						}
+					}
+					result += await DbContext.SaveChangesAsync();
+					transaction.Commit();
+				}
+				catch (Exception e)
+				{
+					transaction.Rollback();
+					throw e;
+				}
+			}
+			return result;
+		}
 	}
 }

@@ -30,7 +30,7 @@ namespace Com.DanLiris.Service.DealTracking.Lib.Models
         public string Reason { get; set; }
         public string UomUnit { get; set; }
         public virtual long StageId { get; set; }
-        //[ForeignKey("StageId")]
-        //public virtual Stage Stage { get; set; }
-    }
+		[ForeignKey("StageId")]
+		public virtual Stage Stage { get; set; }
+	}
 }

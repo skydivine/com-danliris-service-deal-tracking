@@ -435,6 +435,8 @@ namespace Com.DanLiris.Service.DealTracking.Lib.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StageId");
+
                     b.ToTable("DealTrackingDeals");
                 });
 
@@ -571,6 +573,14 @@ namespace Com.DanLiris.Service.DealTracking.Lib.Migrations
                     b.HasOne("Com.DanLiris.Service.DealTracking.Lib.Models.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Com.DanLiris.Service.DealTracking.Lib.Models.Deal", b =>
+                {
+                    b.HasOne("Com.DanLiris.Service.DealTracking.Lib.Models.Stage", "Stage")
+                        .WithMany("Deals")
+                        .HasForeignKey("StageId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

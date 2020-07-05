@@ -145,14 +145,14 @@ namespace Com.DanLiris.Service.DealTracking
                 app.UseDeveloperExceptionPage();
             }
 
-            /* Update Database */
-            //using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            //{
-            //    DealTrackingDbContext context = serviceScope.ServiceProvider.GetService<DealTrackingDbContext>();
-            //    context.Database.Migrate();
-            //}
+			/* Update Database */
+			using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+			{
+				DealTrackingDbContext context = serviceScope.ServiceProvider.GetService<DealTrackingDbContext>();
+				context.Database.Migrate();
+			}
 
-            app.UseAuthentication();
+			app.UseAuthentication();
             app.UseCors(DEAL_TRACKING_POLICY);
             app.UseMvc();
             app.UseSwagger();

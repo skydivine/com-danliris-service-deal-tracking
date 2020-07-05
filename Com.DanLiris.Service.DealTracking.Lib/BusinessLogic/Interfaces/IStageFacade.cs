@@ -10,5 +10,7 @@ namespace Com.DanLiris.Service.DealTracking.Lib.BusinessLogic.Interfaces
     public interface IStageFacade : IBaseFacade<Stage>
     {
 		Task<Tuple<int, int, int>> UpdateDealStage();
+		Task<Tuple<int, int, int>> UpdateDealOrderStage();
+		Task<int> UpdateStageActivity();
 	}
 }
